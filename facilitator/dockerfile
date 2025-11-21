@@ -1,0 +1,14 @@
+# Development-focused image that runs `pnpm dev`
+FROM node:20-slim
+
+WORKDIR /app
+
+RUN corepack enable
+
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+COPY . .
+
+EXPOSE 3001
+CMD ["pnpm", "dev"]

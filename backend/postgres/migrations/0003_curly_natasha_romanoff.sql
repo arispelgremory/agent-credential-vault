@@ -1,0 +1,1 @@
+ALTER TABLE "main"."user" ALTER COLUMN "kyc_status" SET DEFAULT 'pending_verification';

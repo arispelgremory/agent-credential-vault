@@ -1,0 +1,23 @@
+FROM node:21-alpine AS base
+WORKDIR /app
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
+
+# Install dependencies
+RUN pnpm install
+
+# Copy the rest of the application
+COPY . .
+
+# Build the Next.js application for production
+RUN pnpm build
+
+# Expose the port
+EXPOSE 3000
+
+# Start the Next.js production server
+CMD ["pnpm", "run", "start"]

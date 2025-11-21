@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "next-devtools": {
+      "command": "npx",
+      "args": ["-y", "next-devtools-mcp@latest"]
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": [
+        "shadcn@latest",
+        "mcp"
+      ]
+    },
+    "tailwindcss": {
+      "command": "npx",
+      "args": [
+        "tailwindcss@latest",
+        "mcp"
+      ]
+    },
+    "w3-identity-platform-api": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "tsx",
+        "../backend/src/openapi-mcp/mcp-server.ts"
+      ]
+    }
+  }
+}

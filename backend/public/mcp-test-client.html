@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Test Client - Hedera Wallet</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .status.connected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.connecting {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .run-all-btn {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            padding: 15px;
+            font-size: 18px;
+        }
+        
+        .output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .log-entry {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-left: 3px solid #667eea;
+            background: white;
+            border-radius: 4px;
+        }
+        
+        .log-entry.success {
+            border-left-color: #28a745;
+        }
+        
+        .log-entry.error {
+            border-left-color: #dc3545;
+            background: #fff5f5;
+        }
+        
+        .log-entry.info {
+            border-left-color: #17a2b8;
+        }
+        
+        .log-time {
+            color: #6c757d;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .tool-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .tool-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔷 Hedera MCP Test Client</h1>
+            <p>Test the Model Context Protocol server for Hedera operations</p>
+        </div>
+        
+        <div class="content">
+            <div id="status" class="status disconnected">
+                ⚫ Disconnected
+            </div>
+            
+            <div class="controls">
+                <button id="connectBtn" onclick="connect()">Connect</button>
+                <button id="disconnectBtn" onclick="disconnect()" disabled>Disconnect</button>
+                <button onclick="listTools()" disabled id="listToolsBtn">List Tools</button>
+                <button onclick="createWallet()" disabled id="createWalletBtn">Create Wallet</button>
+                <button onclick="checkBalance()" disabled id="checkBalanceBtn">Check Balance</button>
+                <button onclick="buildTransaction()" disabled id="buildTxBtn">Build Transaction</button>
+                <button onclick="sendTransaction()" disabled id="sendTxBtn">Send Transaction</button>
+                <button class="run-all-btn" onclick="runAllTests()" disabled id="runAllBtn">🚀 Run All Tests</button>
+            </div>
+            
+            <div class="tool-section">
+                <h3>Check Balance</h3>
+                <div class="form-group">
+                    <label>Account ID:</label>
+                    <input type="text" id="accountId" placeholder="0.0.123456">
+                </div>
+            </div>
+            
+            <div class="tool-section">
+                <h3>Build Transaction</h3>
+                <div class="form-group">
+                    <label>Sender Account ID:</label>
+                    <input type="text" id="senderId" placeholder="0.0.123456">
+                </div>
+                <div class="form-group">
+                    <label>Recipient Account ID:</label>
+                    <input type="text" id="recipientId" placeholder="0.0.123456">
+                </div>
+                <div class="form-group">
+                    <label>Amount (tinybars):</label>
+                    <input type="number" id="amount" placeholder="1000000">
+                </div>
+            </div>
+            
+            <div class="tool-section">
+                <h3>Send Transaction</h3>
+                <div class="form-group">
+                    <label>Signed Transaction (Base64):</label>
+                    <input type="text" id="signedTx" placeholder="Paste signed transaction here">
+                </div>
+            </div>
+            
+            <h3>Output Log</h3>
+            <div id="output" class="output"></div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:9487';
+        const SSE_URL = `${BASE_URL}/api/v1/mcp/sse`;
+        const MESSAGES_URL = `${BASE_URL}/api/v1/mcp/messages`;
+        
+        let eventSource = null;
+        let messageQueue = new Map();
+        let messageIdCounter = 0;
+        let walletData = null;
+        
+        function log(message, type = 'info') {
+            const output = document.getElementById('output');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const time = new Date().toLocaleTimeString();
+            entry.innerHTML = `<span class="log-time">[${time}]</span>${message}`;
+            output.appendChild(entry);
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function updateStatus(status, text) {
+            const statusEl = document.getElementById('status');
+            statusEl.className = `status ${status}`;
+            statusEl.textContent = text;
+        }
+        
+        function setButtonsEnabled(enabled) {
+            const buttons = ['listToolsBtn', 'createWalletBtn', 'checkBalanceBtn', 'buildTxBtn', 'sendTxBtn', 'runAllBtn'];
+            buttons.forEach(id => {
+                document.getElementById(id).disabled = !enabled;
+            });
+            document.getElementById('connectBtn').disabled = enabled;
+            document.getElementById('disconnectBtn').disabled = !enabled;
+        }
+        
+        async function connect() {
+            try {
+                updateStatus('connecting', '🟡 Connecting...');
+                log('🔌 Connecting to MCP server...', 'info');
+                
+                eventSource = new EventSource(SSE_URL);
+                
+                eventSource.onopen = () => {
+                    updateStatus('connected', '🟢 Connected');
+                    log('✅ Connected to MCP server', 'success');
+                    setButtonsEnabled(true);
+                    initialize();
+                };
+                
+                eventSource.onerror = (error) => {
+                    log('❌ SSE connection error: ' + error, 'error');
+                    updateStatus('disconnected', '⚫ Disconnected');
+                    setButtonsEnabled(false);
+                };
+                
+                eventSource.onmessage = (event) => {
+                    try {
+                        const message = JSON.parse(event.data);
+                        handleMessage(message);
+                    } catch (error) {
+                        log('Error parsing SSE message: ' + error, 'error');
+                    }
+                };
+            } catch (error) {
+                log('❌ Connection failed: ' + error.message, 'error');
+                updateStatus('disconnected', '⚫ Disconnected');
+            }
+        }
+        
+        function disconnect() {
+            if (eventSource) {
+                eventSource.close();
+                eventSource = null;
+                updateStatus('disconnected', '⚫ Disconnected');
+                log('👋 Disconnected from MCP server', 'info');
+                setButtonsEnabled(false);
+            }
+        }
+        
+        function handleMessage(message) {
+            if (message.id !== undefined && messageQueue.has(message.id)) {
+                const resolver = messageQueue.get(message.id);
+                messageQueue.delete(message.id);
+                
+                if (message.error) {
+                    resolver({ error: message.error });
+                } else {
+                    resolver({ result: message.result });
+                }
+            } else {
+                log('📨 Received: ' + JSON.stringify(message, null, 2), 'info');
+            }
+        }
+        
+        async function sendMessage(method, params = {}) {
+            const id = ++messageIdCounter;
+            const message = {
+                jsonrpc: '2.0',
+                id,
+                method,
+                params
+            };
+            
+            return new Promise((resolve, reject) => {
+                messageQueue.set(id, (response) => {
+                    if (response.error) {
+                        reject(new Error(response.error.message));
+                    } else {
+                        resolve(response.result);
+                    }
+                });
+                
+                fetch(MESSAGES_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(message)
+                }).catch((error) => {
+                    messageQueue.delete(id);
+                    reject(error);
+                });
+            });
+        }
+        
+        async function initialize() {
+            try {
+                log('🚀 Initializing MCP connection...', 'info');
+                await sendMessage('initialize', {
+                    protocolVersion: '2024-11-05',
+                    capabilities: {},
+                    clientInfo: {
+                        name: 'hedera-mcp-test-client',
+                        version: '1.0.0'
+                    }
+                });
+                log('✅ MCP connection initialized', 'success');
+            } catch (error) {
+                log('❌ Initialization failed: ' + error.message, 'error');
+            }
+        }
+        
+        async function listTools() {
+            try {
+                log('📋 Listing available tools...', 'info');
+                const result = await sendMessage('tools/list');
+                log('Available tools: ' + JSON.stringify(result, null, 2), 'success');
+            } catch (error) {
+                log('❌ Failed to list tools: ' + error.message, 'error');
+            }
+        }
+        
+        async function createWallet() {
+            try {
+                log('💰 Creating new Hedera wallet...', 'info');
+                const result = await sendMessage('tools/call', {
+                    name: 'create-wallet',
+                    arguments: {}
+                });
+                walletData = JSON.parse(result.content[0].text);
+                log('✅ Wallet created: ' + JSON.stringify(walletData, null, 2), 'success');
+                document.getElementById('accountId').value = walletData.accountId;
+                document.getElementById('senderId').value = walletData.accountId;
+            } catch (error) {
+                log('❌ Failed to create wallet: ' + error.message, 'error');
+            }
+        }
+        
+        async function checkBalance() {
+            try {
+                const accountId = document.getElementById('accountId').value;
+                if (!accountId) {
+                    log('⚠️ Please enter an account ID', 'error');
+                    return;
+                }
+                log(`💵 Checking balance for account ${accountId}...`, 'info');
+                const result = await sendMessage('tools/call', {
+                    name: 'check-balance',
+                    arguments: { accountId }
+                });
+                log('✅ ' + result.content[0].text, 'success');
+            } catch (error) {
+                log('❌ Failed to check balance: ' + error.message, 'error');
+            }
+        }
+        
+        async function buildTransaction() {
+            try {
+                const senderId = document.getElementById('senderId').value;
+                const recipientId = document.getElementById('recipientId').value;
+                const amount = parseInt(document.getElementById('amount').value);
+                
+                if (!senderId || !recipientId || !amount) {
+                    log('⚠️ Please fill in all transaction fields', 'error');
+                    return;
+                }
+                
+                log(`📝 Building transaction: ${amount} tinybars from ${senderId} to ${recipientId}...`, 'info');
+                const result = await sendMessage('tools/call', {
+                    name: 'build-transaction',
+                    arguments: { senderAccountId: senderId, recipientAccountId: recipientId, amount }
+                });
+                const txData = JSON.parse(result.content[0].text);
+                log('✅ Transaction built: ' + txData.info, 'success');
+                log('Transaction (Base64): ' + txData.transaction.substring(0, 100) + '...', 'info');
+                document.getElementById('signedTx').value = txData.transaction;
+            } catch (error) {
+                log('❌ Failed to build transaction: ' + error.message, 'error');
+            }
+        }
+        
+        async function sendTransaction() {
+            try {
+                const signedTx = document.getElementById('signedTx').value;
+                if (!signedTx) {
+                    log('⚠️ Please enter a signed transaction', 'error');
+                    return;
+                }
+                log('📤 Sending signed transaction...', 'info');
+                const result = await sendMessage('tools/call', {
+                    name: 'send-transaction',
+                    arguments: { signedTransaction: signedTx }
+                });
+                log('✅ ' + result.content[0].text, 'success');
+            } catch (error) {
+                log('❌ Failed to send transaction: ' + error.message, 'error');
+            }
+        }
+        
+        async function runAllTests() {
+            if (!walletData) {
+                log('💰 Step 1: Creating wallet...', 'info');
+                await createWallet();
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            log('💵 Step 2: Checking balance...', 'info');
+            await checkBalance();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            log('📝 Step 3: Building transaction...', 'info');
+            const operatorId = prompt('Enter operator account ID:', '0.0.123456') || '0.0.123456';
+            document.getElementById('recipientId').value = operatorId;
+            await buildTransaction();
+            
+            log('⚠️ Note: Signing and sending transaction requires client-side Hedera SDK. Use the Node.js test client for full automation.', 'info');
+        }
+    </script>
+</body>
+</html>
+

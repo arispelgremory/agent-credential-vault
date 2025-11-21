@@ -1,0 +1,87 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:17.5-alpine
+    container_name: metamynd-postgres
+    env_file:
+      - ./backend/.env.production
+    ports:
+      - "15432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - metamynd-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Backend API
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/dockerfile
+    container_name: metamynd-backend
+    ports:
+      - "9926:9487"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # external_links: # If you want to use the local postgres database outside of docker-compose.yml
+    #   - postgres:postgres
+    networks:
+      - metamynd-network
+    volumes:
+      - ./backend/src:/app/src
+      - uploads_data:/app/public/uploads
+    environment:
+      - PHOENIX_COLLECTOR_ENDPOINT=http://phoenix:6006/v1/traces
+      - UPLOADS_PATH=/app/public/uploads
+    env_file:
+      - ./backend/.env.production
+    restart: unless-stopped
+
+  # Frontend React App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./dockerfile
+    container_name: metamynd-frontend
+    env_file:
+      - ./frontend/.env.production
+    ports:
+      - "9927:3000"
+    depends_on:
+      - backend
+    networks:
+      - metamynd-network
+    restart: unless-stopped
+    
+  facilitator:
+    build:
+      context: ./facilitator
+      dockerfile: ./dockerfile
+    container_name: metamynd-facilitator
+    env_file:
+      - ./facilitator/.env.production
+    ports:
+      - "3001:3001"
+    networks:
+      - metamynd-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  ollama_data:
+    driver: local
+  uploads_data:
+    driver: local
+
+networks:
+  metamynd-network:
+    driver: bridge

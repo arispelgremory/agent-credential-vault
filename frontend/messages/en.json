@@ -1,0 +1,21 @@
+{
+    "login": {
+        "title": "Login to your account",
+        "subtitle": "Enter your email below to login to your account",
+        "form": {
+            "username": {
+                "label": "Email / Phone Number",
+                "message": "Invalid email or phone number",
+                "placeholder": "admin@gmail.com"
+            },
+            "password": {
+                "label": "Password",
+                "message": "Invalid password",
+                "placeholder": "********"
+            },
+            "button": {
+                "submit": "Submit"
+            }
+        }
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "login": {
+        "title": "ログイン",
+        "subtitle": "ログインしてください",
+        "form": {
+            "username": {
+                "label": "メールアドレス",
+                "message": "メールアドレスが無効です",
+                "placeholder": "admin@gmail.com"
+            },
+            "password": {
+                "label": "パスワード",
+                "message": "パスワードが無効です",
+                "placeholder": "********"
+            },
+            "button": {
+                "submit": "送信"
+            }
+        }
+    }
+}

@@ -1,0 +1,1 @@
+ALTER TABLE "main"."mcp" ADD COLUMN "capabilities" text;

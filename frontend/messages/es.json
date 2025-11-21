@@ -1,0 +1,21 @@
+{
+    "login": {
+        "title": "Iniciar sesión en tu cuenta",
+        "subtitle": "Ingrese su correo electrónico a continuación para iniciar sesión en su cuenta",
+        "form": {
+            "username": {
+                "label": "Correo electrónico / Número de teléfono",
+                "message": "Correo electrónico o número de teléfono inválido",
+                "placeholder": "admin@gmail.com"
+            },
+            "password": {
+                "label": "Contraseña",
+                "message": "Contraseña inválida",
+                "placeholder": "********"
+            },
+            "button": {
+                "submit": "Enviar"
+            }
+        }
+    }
+}

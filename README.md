@@ -20,7 +20,7 @@ ERC-8004 identity & capability registry
 ### Project Structure
 
 ```
-metamynd/
+agent-credential-vault/
 ├── frontend/   # NextJS application
 ├── backend/    # Express.js backend API
 ├── facilitator/      # Facilitator
@@ -41,12 +41,12 @@ Make sure you have registered the hedera testnet account at https://portal.heder
 
 1. Clone this project with
 ```
-git clone git@github.com:arispelgremory/w3-identity-platform.git
+git clone git@github.com:arispelgremory/agent-credential-vault.git
 ```
 2. Create a .env file frontend, backend and facilitator
 #### Frontend
 ```
-<!-- Assuming terminal is at metamynd/ -->
+<!-- Assuming terminal is at agent-credential-vault/ -->
 cd frontend
 cp .env.example .env
 ```
@@ -62,7 +62,7 @@ NEXT_PUBLIC_OUTBOUND_TOPIC_ID=
 
 #### Backend
 ```
-<!-- Assuming terminal is at metamynd/frontend -->
+<!-- Assuming terminal is at agent-credential-vault/frontend -->
 cd ../backend
 cp .env.example .env
 ```
@@ -106,7 +106,7 @@ VALIDATION_REGISTRY=0xb9d0be53ab8d6713324e621d0a27e0df11fe4897
 ```
 #### Facilitator
 ```
-<!-- Assuming terminal is at metamynd/backend -->
+<!-- Assuming terminal is at agent-credential-vault/backend -->
 cd ../facilitator
 cp .env.example .env
 ```
@@ -119,7 +119,7 @@ PORT=3001
 
 ### How to Start metamynd
 ``` 
-<!-- Assuming terminal is at metamynd/ -->
+<!-- Assuming terminal is at agent-credential-vault/ -->
 docker compose up -d
 ```
 

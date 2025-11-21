@@ -3,7 +3,7 @@
 
 ## Project Description
 
-AgentSafe is a secure access layer that allows AI agents to perform real-world actions without ever seeing user credentials. Users save their credentials into an encrypted offline Credential Vault which decrypts and executes API calls on demand through a verified MCP server. Every agent action is validated, policy-checked, and immutably logged on Hedera HCS. AgentSafe enables safe, auditable, revocable delegated access, empowering agents to schedule meetings, send emails, or manage data through a range of MCP servers while keeping credentials fully protected.
+AgentSafe is a secure access layer that allows AI agents to perform real-world actions without ever seeing user credentials. Users save their credentials into an encrypted offline Credential Vault which decrypts and executes API calls on demand through a verified MCP server. Every agent action is validated, policy-checked, and immutably logged on Hedera HCS. AgentSafe enables safe, auditable, revocable delegated access, empowering agents to schedule meetings, send emails, or manage data through a range of MCP servers while keeping credentials fully protected. Demo video: https://youtu.be/HJutd6kCk0w
 
 Core Components:
 

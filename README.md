@@ -13,6 +13,19 @@ Credential Vault – encrypted credential execution environment
 Hedera Hashgraph HCS-10 / HCS-14 for proof logs
 ERC-8004 identity & capability registry
 
+### Artifacts
+
+X402 Payment:
+Transaction ID: 
+
+https://hashscan.io/testnet/transaction/1763739030.398532000
+
+Chat Transcript:
+
+https://hashscan.io/testnet/topic/0.0.7255202
+
+https://hashscan.io/testnet/topic/0.0.7255214
+
 ---
 
 ## 🚀 Deployment & Setup Instructions

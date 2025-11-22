@@ -3,7 +3,9 @@
 
 ## Project Description
 
-AgentSafe is a secure access layer that allows AI agents to perform real-world actions without ever seeing user credentials. Users save their credentials into an encrypted offline Credential Vault which decrypts and executes API calls on demand through a verified MCP server. Every agent action is validated, policy-checked, and immutably logged on Hedera HCS. AgentSafe enables safe, auditable, revocable delegated access, empowering agents to schedule meetings, send emails, or manage data through a range of MCP servers while keeping credentials fully protected. Demo video: https://youtu.be/HJutd6kCk0w
+AgentSafe is a secure access layer that allows AI agents to perform real-world actions without ever seeing user credentials. Users save their credentials into an encrypted offline Credential Vault which decrypts and executes API calls on demand through a verified MCP server. Every agent action is validated, policy-checked, and immutably logged on Hedera HCS. AgentSafe enables safe, auditable, revocable delegated access, empowering agents to schedule meetings, send emails, or manage data through a range of MCP servers while keeping credentials fully protected. 
+
+Demo video: https://youtu.be/HJutd6kCk0w
 
 Core Components:
 
@@ -11,7 +13,13 @@ Granite 4 (Mixture-of-Experts LLM) – intent parsing, tool-calling, reasoning
 Model Context Protocol (MCP) – standardized agent → server capabilities
 Credential Vault – encrypted credential execution environment
 Hedera Hashgraph HCS-10 / HCS-14 for proof logs
-ERC-8004 identity & capability registry
+ERC-8004 identity & capability registry.
+
+### Solution Architecture
+
+<img width="1240" height="928" alt="image" src="https://github.com/user-attachments/assets/d84490fa-0b91-4df3-bafa-04e4d62bb47e" />
+
+Currently setup with Hedera MCP server and expandable to include any MCP Servers for secure actions.
 
 ### Artifacts
 
